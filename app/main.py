@@ -101,27 +101,10 @@ class WhisPayAssistant:
         if not has_enrolled_users:
             self.speak(
                 "I notice this is your first time using WhisPay. "
-                "For security, I'll verify your identity with your PIN first, "
-                "then we can enroll your voice for future logins. "
+                "For security, I'll verify your identity with your PIN. "
                 "Please speak your 4-digit PIN."
             )
-            if self.authenticate_with_pin():
-                # Offer to enroll voice
-                self.speak(
-                    "Great! Now, would you like to enroll your voice for faster authentication next time? "
-                    "Say 'yes' to enroll, or 'no' to skip."
-                )
-                response = self.listen()
-                if response:
-                    if 'yes' in response.lower():
-                        self.enroll_voice_print()
-                    elif 'no' in response.lower():
-                        self.speak("No problem! You can always enroll your voice later. Let's continue.")
-                    else:
-                        # User said something else - clarify
-                        self.speak("I didn't quite catch that. Skipping voice enrollment for now. Let's get started.")
-                return True
-            return False
+            return self.authenticate_with_pin()
         
         # Try voice authentication for returning users
         self.speak("Please say a few words so I can verify your identity.")
