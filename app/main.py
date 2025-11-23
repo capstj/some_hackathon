@@ -112,8 +112,14 @@ class WhisPayAssistant:
                     "Say 'yes' to enroll, or 'no' to skip."
                 )
                 response = self.listen()
-                if response and 'yes' in response.lower():
-                    self.enroll_voice_print()
+                if response:
+                    if 'yes' in response.lower():
+                        self.enroll_voice_print()
+                    elif 'no' in response.lower():
+                        self.speak("No problem! You can always enroll your voice later. Let's continue.")
+                    else:
+                        # User said something else - clarify
+                        self.speak("I didn't quite catch that. Skipping voice enrollment for now. Let's get started.")
                 return True
             return False
         
@@ -485,8 +491,10 @@ class WhisPayAssistant:
     
     def is_exit_command(self, text: str) -> bool:
         """Check if input is an exit command."""
-        exit_patterns = ['bye', 'goodbye', 'exit', 'quit', 'stop', 'end']
-        return any(pattern in text.lower() for pattern in exit_patterns)
+        import re
+        exit_patterns = [r'\bbye\b', r'\bgoodbye\b', r'\bexit\b', r'\bquit\b', r'\bstop\b', r'\bend\b', r'\blogout\b']
+        text_lower = text.lower()
+        return any(re.search(pattern, text_lower) for pattern in exit_patterns)
     
     def check_proactive_suggestions(self):
         """Check and present proactive suggestions."""
